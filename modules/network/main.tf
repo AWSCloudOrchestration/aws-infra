@@ -1,12 +1,23 @@
-data "aws_availability_zones" "available" {
-  state = "available"
+resource "random_id" "prefix_id" {
+  byte_length = 8
 }
 
+resource "random_id" "public_subnet_random_id" {
+    count       = length(var.public_subnets_cidr)
+    byte_length = 2
+}
+
+resource "random_id" "private_subnet_random_id" {
+    count       = length(var.private_subnets_cidr)
+    byte_length = 2
+}
+
+// AWS VPC
 resource "aws_vpc" "vpc" {
   cidr_block = "${var.vpc_cidr}"
 
   tags = {
-    Name = "${var.environment}-vpc"
+    Name = "vpc-${var.environment}-${random_id.prefix_id.hex}"
     Environment = "${var.environment}"
   }
 }
@@ -17,10 +28,10 @@ resource "aws_subnet" "public_subnet" {
   count                   = "${length(var.public_subnets_cidr)}"
   cidr_block              = "${element(var.public_subnets_cidr, count.index)}"
   availability_zone       = "${element(var.availability_zones, count.index)}"
-#   map_public_ip_on_launch = true
+  map_public_ip_on_launch = true
 
   tags = {
-    Name        = "${var.environment}-${element(var.availability_zones, count.index)}-public-subnet"
+    Name        = "public-subnet-${var.environment}-${element(var.availability_zones, count.index)}-${random_id.public_subnet_random_id.*.hex[count.index]}"
     Environment = "${var.environment}"
   }
 }
@@ -34,7 +45,7 @@ resource "aws_subnet" "private_subnet" {
   map_public_ip_on_launch = false
 
   tags = {
-    Name        = "${var.environment}-${element(var.availability_zones, count.index)}-private-subnet"
+    Name        = "private-subnet-${var.environment}-${element(var.availability_zones, count.index)}-${random_id.private_subnet_random_id.*.hex[count.index]}"
     Environment = "${var.environment}"
   }
 }
@@ -54,7 +65,7 @@ resource "aws_route_table" "public_route_table" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags = {
-    Name        = "${var.environment}-public-route-table"
+    Name        = "public-route-table-${var.environment}"
     Environment = "${var.environment}"
   }
 }
@@ -77,7 +88,7 @@ resource "aws_route_table" "private_route_table" {
   vpc_id = "${aws_vpc.vpc.id}"
 
   tags = {
-    Name        = "${var.environment}-private-route-table"
+    Name        = "private-route-table-${var.environment}"
     Environment = "${var.environment}"
   }
 }
