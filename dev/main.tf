@@ -4,7 +4,7 @@ data "aws_availability_zones" "available" {
 }
 
 module "network" {
-  source = "./modules/network"
+  source = "../modules/network"
 
   region               = var.region
   environment          = var.environment
