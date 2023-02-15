@@ -25,3 +25,8 @@ variable "private_subnets_cidr" {
   type        = list(any)
   description = "CIDR block for private subnets"
 }
+
+variable "public_route_destination_cidr_block" {
+  description = "The destination cidr for public route"
+  default     = "0.0.0.0/0"
+}

@@ -7,12 +7,12 @@ variable "vpc_cidr" {
 }
 
 variable "public_subnets_cidr" {
-  type        = list
+  type        = list(any)
   description = "The CIDR block for the public subnet"
 }
 
 variable "private_subnets_cidr" {
-  type        = list
+  type        = list(any)
   description = "The CIDR block for the private subnet"
 }
 
@@ -21,6 +21,11 @@ variable "region" {
 }
 
 variable "availability_zones" {
-  type        = list
+  type        = list(any)
   description = "The az that the resources will be launched"
+}
+
+variable "public_route_destination_cidr_block" {
+  description = "The destination cidr for public route"
+  default     = "0.0.0.0/0"
 }
