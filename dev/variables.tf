@@ -5,7 +5,7 @@ variable "region" {
 
 variable "preferred_availability_zones" {
   description = "AWS availability zones"
-  default     = null
+  default     = []
 }
 
 variable "profile" {
