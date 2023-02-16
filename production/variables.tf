@@ -3,6 +3,11 @@ variable "region" {
   default     = "us-east-2"
 }
 
+variable "preferred_availability_zones" {
+  description = "AWS availability zones"
+  default     = null
+}
+
 variable "profile" {
   description = "AWS cli profile"
   default     = "production"

@@ -11,5 +11,5 @@ module "network" {
   vpc_cidr             = var.vpc_cidr
   public_subnets_cidr  = var.public_subnets_cidr
   private_subnets_cidr = var.private_subnets_cidr
-  availability_zones   = data.aws_availability_zones.available.names
+  availability_zones   = try(var.preferred_availability_zones, data.aws_availability_zones.available.names)
 }
