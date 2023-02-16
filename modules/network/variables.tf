@@ -21,6 +21,11 @@ variable "private_subnets_cidr" {
 variable "region" {
   type        = string
   description = "The region to launch the bastion host"
+
+  validation {
+    condition     = can(regex("[a-z][a-z]-[a-z]+-[1-9]", var.region))
+    error_message = "Must be valid AWS Region"
+  }
 }
 
 variable "availability_zones" {
