@@ -103,3 +103,91 @@ resource "aws_route_table_association" "private_route_table_association" {
   subnet_id      = element(aws_subnet.private_subnet.*.id, count.index)
   route_table_id = aws_route_table.private_route_table.id
 }
+
+// EC2 instance from custom AMI
+resource "aws_instance" "webapp-ec2" {
+  ami           = "ami-0e79d6c8684745f26"
+  instance_type = "t2.micro"
+  subnet_id     = aws_subnet.public_subnet[0].id
+
+  tags = {
+    Name        = "instance-${var.environment}-${random_id.suffix_id.hex}"
+    Environment = "${var.environment}"
+  }
+}
+
+//  EBS volume
+resource "aws_ebs_volume" "ebs-volume" {
+  availability_zone = var.ec2_availability_zone
+  size              = 8
+  type              = "gp2"
+
+  tags = {
+    Name        = "ebs-volume-${random_id.suffix_id.hex}"
+    Environment = "${var.environment}"
+  }
+}
+
+// Volume attachment
+resource "aws_volume_attachment" "ec2_volume_attachment" {
+  device_name = "/dev/sdf"
+  volume_id   = aws_ebs_volume.ebs-volume.id
+  instance_id = aws_instance.webapp-ec2.id
+}
+
+// Security group
+resource "aws_security_group" "webapp-sg" {
+  name        = "application"
+  description = "SG for webapp"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    from_port        = 443
+    to_port          = 443
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    from_port        = 80
+    to_port          = 80
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  ingress {
+    from_port        = 3001
+    to_port          = 3001
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  egress {
+    from_port        = 0
+    to_port          = 0
+    protocol         = "-1"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
+
+  tags = {
+    Name = "application"
+    Environment = "${var.environment}"
+  }
+}
+
+resource "aws_network_interface_sg_attachment" "sg_attachment" {
+  security_group_id    = aws_security_group.webapp-sg.id
+  network_interface_id = aws_instance.webapp-ec2.primary_network_interface_id
+}

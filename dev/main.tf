@@ -12,4 +12,5 @@ module "network" {
   public_subnets_cidr  = var.public_subnets_cidr
   private_subnets_cidr = var.private_subnets_cidr
   availability_zones   = length(var.preferred_availability_zones) > 0 ? var.preferred_availability_zones : data.aws_availability_zones.available.names
+  ec2_availability_zone = var.ec2_availability_zone
 }

@@ -38,3 +38,8 @@ variable "public_route_destination_cidr_block" {
   description = "The destination cidr for public route"
   default     = "0.0.0.0/0"
 }
+
+variable "ec2_availability_zone" {
+  type = string
+  description = "Instance availability zone"
+}
