@@ -39,7 +39,3 @@ variable "public_route_destination_cidr_block" {
   default     = "0.0.0.0/0"
 }
 
-variable "ec2_availability_zone" {
-  type = string
-  description = "Instance availability zone"
-}

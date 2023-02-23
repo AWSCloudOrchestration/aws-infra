@@ -3,11 +3,11 @@ output "vpc_id" {
 }
 
 output "public_subnet_ids" {
-  value = ["${aws_subnet.public_subnet.*.id}"]
+  value = aws_subnet.public_subnet
 }
 
 output "private_subnet_ids" {
-  value = ["${aws_subnet.private_subnet.*.id}"]
+  value = aws_subnet.private_subnet
 }
 
 output "public_route_table" {
@@ -17,3 +17,4 @@ output "public_route_table" {
 output "private_route_table" {
   value = aws_route_table.private_route_table.id
 }
+
