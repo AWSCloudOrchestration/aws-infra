@@ -1,3 +1,4 @@
+// Network module variables
 variable "region" {
   type        = string
   description = "AWS Deployment region"
@@ -42,7 +43,38 @@ variable "public_route_destination_cidr_block" {
   default     = "0.0.0.0/0"
 }
 
-variable "ec2_availability_zone" {
-  type = string
-  description = "Instance availability zone"
+// Module instance variables
+variable "ec2_source_ami" {
+  type    = string
+  default = null
+}
+
+variable "ec2_target_subnet_id" {
+  type    = string
+  default = null
+}
+
+variable "ec2_instance_type" {
+  type    = string
+  default = "t2.micro"
+}
+
+variable "ebs_size" {
+  type    = number
+  default = 8
+}
+
+variable "ebs_type" {
+  type    = string
+  default = "gp2"
+}
+
+variable "application_sg_name" {
+  type    = string
+  default = "application"
+}
+
+variable "instance_environment" {
+  type    = string
+  default = "dev"
 }
