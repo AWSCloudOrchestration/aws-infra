@@ -1,5 +1,5 @@
 data "aws_ami" "custom_ami" {
-  most_recent      = true
+  most_recent = true
 
   filter {
     name   = "name"
@@ -14,9 +14,10 @@ resource "random_id" "suffix_id" {
 
 // EC2 instance from custom AMI
 resource "aws_instance" "webapp-ec2" {
-  ami           = var.ec2_source_ami == null ? data.aws_ami.custom_ami.id : var.ec2_source_ami
-  instance_type = var.ec2_instance_type
-  subnet_id     = var.ec2_target_subnet_id
+  ami                     = var.ec2_source_ami == null ? data.aws_ami.custom_ami.id : var.ec2_source_ami
+  instance_type           = var.ec2_instance_type
+  subnet_id               = var.ec2_target_subnet_id
+  disable_api_termination = false
 
   root_block_device {
     volume_size           = var.ebs_size
@@ -77,7 +78,7 @@ resource "aws_security_group" "webapp-sg" {
   }
 
   tags = {
-    Name = "application"
+    Name        = "application"
     Environment = "${var.instance_environment}"
   }
 }
