@@ -61,3 +61,27 @@ variable "db_max_allocated_storage" {
   type = number
   default = 10
 }
+
+variable "db_multi_az" {
+  type = bool
+  default = false
+}
+
+variable "db_sg_name" {
+  type = string
+  default = "database"
+}
+
+variable "db_sg_target_vpc_id" {
+  type = string
+}
+
+variable "application_sg_id" {
+    type = string
+    default = null
+}
+
+variable "db_vpc_security_group_ids" {
+  type = list(string)
+  default = null
+}

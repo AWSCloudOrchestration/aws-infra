@@ -41,3 +41,27 @@ variable "ebs_delete_on_termination" {
     type = bool
     default = true
 }
+
+variable "rds_address" {
+  type = string
+  default = null
+}
+
+variable "rds_username" {
+  type = string
+  default = null
+}
+
+variable "rds_password" {
+  type = string
+  default = null
+}
+
+variable "rds_db_name" {
+  type = string
+  default = null
+}
+
+variable "ec2_vpc_security_group_ids" {
+    type = list(string)
+}
