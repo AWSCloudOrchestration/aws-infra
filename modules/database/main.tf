@@ -1,3 +1,8 @@
+## ------------------------------------------
+## DATABASE MODULE
+## ------------------------------------------
+
+## Parameter Group
 resource "aws_db_parameter_group" "mysql8-param-group" {
   name   = var.db_parameter_group_name
   family = var.db_parameter_group_family
@@ -17,12 +22,13 @@ resource "aws_db_parameter_group" "mysql8-param-group" {
   }
 }
 
+## DB subnet group
 resource "aws_db_subnet_group" "db-private-subnet-group" {
   name       = "main"
   subnet_ids = var.db_private_subnet_ids
-
 }
 
+## RDS MySQL instance
 resource "aws_db_instance" "mysql-db" {
   db_subnet_group_name   = aws_db_subnet_group.db-private-subnet-group.id
   allocated_storage      = var.db_allocated_storage
@@ -40,37 +46,8 @@ resource "aws_db_instance" "mysql-db" {
   vpc_security_group_ids = var.db_vpc_security_group_ids
   replicate_source_db    = null
 
-  # tags = {
-  #   Name        = "${var.db}"
-  #   Environment = "${var.sg_environment}"
-  # }
+  tags = {
+    Name        = "rds-db-${var.db_environment}"
+    Environment = "${var.db_environment}"
+  }
 }
-
-# // Security group
-# resource "aws_security_group" "db-sg" {
-#   name        = var.db_sg_name
-#   description = "SG for RDS"
-#   vpc_id      = var.db_sg_target_vpc_id
-
-#   ingress {
-#     from_port        = 3306
-#     to_port          = 3306
-#     protocol         = "tcp"
-#     cidr_blocks      = ["0.0.0.0/0"]
-#     ipv6_cidr_blocks = ["::/0"]
-#     security_groups = [var.application_sg_id]
-#   }
-
-#   egress {
-#     from_port        = 0
-#     to_port          = 0
-#     protocol         = "-1"
-#     cidr_blocks      = ["0.0.0.0/0"]
-#     ipv6_cidr_blocks = ["::/0"]
-#   }
-
-#   # tags = {
-#   #   Name        = "application"
-#   #   Environment = "${var.instance_environment}"
-#   # }
-# }

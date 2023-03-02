@@ -1,21 +1,21 @@
-// Random id 8 bit suffix
+## Random id 8 bit suffix
 resource "random_id" "suffix_id" {
   byte_length = 8
 }
 
-// Random id for public subnets
+## Random id for public subnets
 resource "random_id" "public_subnet_random_id" {
   count       = length(var.public_subnets_cidr)
   byte_length = 2
 }
 
-// Random id for private subnets
+## Random id for private subnets
 resource "random_id" "private_subnet_random_id" {
   count       = length(var.private_subnets_cidr)
   byte_length = 2
 }
 
-// AWS VPC
+## AWS VPC
 resource "aws_vpc" "vpc" {
   cidr_block = var.vpc_cidr
 
@@ -25,7 +25,7 @@ resource "aws_vpc" "vpc" {
   }
 }
 
-// Public subnet
+## Public subnet
 resource "aws_subnet" "public_subnet" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.public_subnets_cidr)
@@ -39,7 +39,7 @@ resource "aws_subnet" "public_subnet" {
   }
 }
 
-// Private subnet
+## Private subnet
 resource "aws_subnet" "private_subnet" {
   vpc_id                  = aws_vpc.vpc.id
   count                   = length(var.private_subnets_cidr)
@@ -53,7 +53,7 @@ resource "aws_subnet" "private_subnet" {
   }
 }
 
-// Internet Gateway
+## Internet Gateway
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.vpc.id
 
@@ -63,7 +63,7 @@ resource "aws_internet_gateway" "igw" {
   }
 }
 
-// Public route table
+## Public route table
 resource "aws_route_table" "public_route_table" {
   vpc_id = aws_vpc.vpc.id
 
@@ -73,21 +73,21 @@ resource "aws_route_table" "public_route_table" {
   }
 }
 
-// Associate public subnet with route table
+## Associate public subnet with route table
 resource "aws_route_table_association" "public_route_table_association" {
   count          = length(var.public_subnets_cidr)
   subnet_id      = element(aws_subnet.public_subnet.*.id, count.index)
   route_table_id = aws_route_table.public_route_table.id
 }
 
-// Public route
+## Public route
 resource "aws_route" "public_route" {
   route_table_id         = aws_route_table.public_route_table.id
   destination_cidr_block = var.public_route_destination_cidr_block
   gateway_id             = aws_internet_gateway.igw.id
 }
 
-// Private route table
+## Private route table
 resource "aws_route_table" "private_route_table" {
   vpc_id = aws_vpc.vpc.id
 
@@ -97,7 +97,7 @@ resource "aws_route_table" "private_route_table" {
   }
 }
 
-// Associate private subnet with route table
+## Associate private subnet with route table
 resource "aws_route_table_association" "private_route_table_association" {
   count          = length(var.private_subnets_cidr)
   subnet_id      = element(aws_subnet.private_subnet.*.id, count.index)
