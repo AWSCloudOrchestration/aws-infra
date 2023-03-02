@@ -89,6 +89,21 @@ variable "ec2_vpc_security_group_ids" {
   default = null
 }
 
+variable "s3_iam_instance_profile" {
+  type    = string
+  default = null
+}
+
+variable "s3_instance_bucket_name" {
+  type    = string
+  default = null
+}
+
+variable "s3_aws_region" {
+  type    = string
+  default = null
+}
+
 // RDS variables
 
 variable "db_parameter_group_name" {
@@ -156,11 +171,6 @@ variable "db_multi_az" {
   default = false
 }
 
-variable "application_sg_id" {
-  type    = string
-  default = null
-}
-
 variable "rds_address" {
   type    = string
   default = null
@@ -192,7 +202,7 @@ variable "rds_sg_description" {
 }
 
 variable "db_vpc_security_group_ids" {
-  type = list(string)
+  type    = list(string)
   default = null
 }
 
@@ -207,10 +217,10 @@ variable "application_sg_ingress_rules" {
   }))
   default = [
     {
-    from_port   = 443
-    to_port     = 443
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
     },
     {
       from_port   = 80
@@ -244,8 +254,7 @@ variable "application_sg_egress_rules" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    self        = true
-    cidr_blocks = null
+    cidr_blocks = ["0.0.0.0/0"]
   }]
 }
 
@@ -255,12 +264,11 @@ variable "ingress_security_groups" {
 }
 
 variable "egress_security_groups" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 // RDS SG Rules
-
 variable "rds_sg_ingress_rules" {
   type = list(object({
     from_port   = number
@@ -287,7 +295,70 @@ variable "rds_sg_egress_rules" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    self        = true
-    cidr_blocks = null
+    cidr_blocks = ["0.0.0.0/0"]
   }]
 }
+
+variable "db_environment" {
+  type    = string
+  default = null
+}
+
+// S3 bucket variables
+variable "s3_versioning_configuration" {
+  type    = string
+  default = "Disabled"
+}
+
+variable "s3_bucket_name" {
+  type    = string
+  default = null
+}
+
+variable "s3_bucket_acl" {
+  type    = string
+  default = "private"
+}
+
+variable "transition_to_IA_days" {
+  type    = number
+  default = 30
+}
+
+variable "s3_environment" {
+  type    = string
+  default = null
+}
+
+// IAM variables
+variable "s3_iam_policy_name" {
+  type    = string
+  default = "WebAppS3"
+}
+
+variable "iam_policy_version" {
+  type    = string
+  default = "2012-10-17"
+}
+
+variable "s3_iam_policy_actions" {
+  type = list(string)
+  default = [
+    "s3:GetObject",
+    "s3:PutObject",
+    "s3:DeleteObject",
+    "s3:ListMultipartUploadParts",
+    "s3:AbortMultipartUpload"
+  ]
+}
+
+variable "iam_role_name" {
+  type    = string
+  default = "EC2-CSYE6225"
+}
+
+variable "iam_environment" {
+  type    = string
+  default = null
+}
+
