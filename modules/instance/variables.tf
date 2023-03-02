@@ -82,6 +82,6 @@ variable "s3_aws_region" {
 }
 
 variable "ec2_disable_api_termination" {
-  type = bool
+  type    = bool
   default = false
 }
