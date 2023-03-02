@@ -20,16 +20,16 @@ variable "s3_iam_policy_actions" {
 }
 
 variable "iam_role_name" {
-    type = string
-    default = "ec2-iam-role"
+  type    = string
+  default = "ec2-iam-role"
 }
 
 variable "iam_environment" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "s3_bucket_name" {
-  type = string
+  type    = string
   default = null
 }

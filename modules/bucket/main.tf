@@ -47,7 +47,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "s3_bucket_encrypt
 
   rule {
     apply_server_side_encryption_by_default {
-      sse_algorithm     = var.s3_sse_algorithm
+      sse_algorithm = var.s3_sse_algorithm
     }
   }
 }

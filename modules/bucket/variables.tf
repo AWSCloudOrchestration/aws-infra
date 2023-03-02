@@ -22,31 +22,31 @@ variable "s3_environment" {
 }
 
 variable "s3_block_public_acls" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "s3_block_public_policy" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "s3_ignore_public_acls" {
-    type = bool
-    default = true
+  type    = bool
+  default = true
 }
 
 variable "s3_restrict_public_buckets" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "s3_sse_algorithm" {
-  type = string
+  type    = string
   default = "AES256"
 }
 
 variable "s3_force_destroy" {
-  type = bool
+  type    = bool
   default = true
 }

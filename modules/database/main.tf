@@ -44,7 +44,6 @@ resource "aws_db_instance" "mysql-db" {
   publicly_accessible    = var.db_publicly_accessible
   multi_az               = var.db_multi_az
   vpc_security_group_ids = var.db_vpc_security_group_ids
-  replicate_source_db    = null
 
   tags = {
     Name        = "rds-db-${var.db_environment}"

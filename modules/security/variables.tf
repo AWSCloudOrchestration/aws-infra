@@ -1,18 +1,18 @@
 variable "sg_ingress_rules" {
   type = list(object({
-    from_port        = number
-    to_port          = number
-    protocol         = string
-    cidr_blocks      = list(string)
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
   }))
 }
 
 variable "sg_egress_rules" {
   type = list(object({
-    from_port        = number
-    to_port          = number
-    protocol         = string
-    cidr_blocks      = list(string)
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
   }))
 }
 
@@ -33,11 +33,11 @@ variable "sg_environment" {
 }
 
 variable "ingress_security_groups" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
 
 variable "egress_security_groups" {
-  type = list(string)
+  type    = list(string)
   default = []
 }
