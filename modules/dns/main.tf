@@ -16,6 +16,9 @@ resource "aws_route53_record" "route53_record" {
 }
 
 resource "aws_route53_record" "www" {
+  depends_on = [
+    aws_route53_record.route53_record
+  ]
   count = length(var.route53_dns_records)
 
   zone_id = data.aws_route53_zone.primary.id
