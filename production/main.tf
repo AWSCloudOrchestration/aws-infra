@@ -117,3 +117,14 @@ module "s3_iam" {
   s3_bucket_name        = module.s3_bucket.s3_bucket_name
 
 }
+
+## Route 53
+module "route_53" {
+  source = "../modules/dns"
+
+  route53_zone_name     = var.route53_zone_name
+  route53_dns_records   = var.route53_dns_records
+  route53_records_value = [module.instance.ec2_public_ip]
+  route53_alias_name    = var.route53_alias_name
+  route53_alias_type    = var.route53_alias_type
+}

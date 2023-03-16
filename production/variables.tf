@@ -362,3 +362,18 @@ variable "iam_environment" {
   default = null
 }
 
+## Route 53 variables
+variable "route53_zone_name" {
+  type    = string
+  default = null
+}
+
+variable "route53_dns_records" {
+  type = list(object({
+    name    = string
+    type    = string
+    ttl     = number
+  }))
+  default = null
+}
+
