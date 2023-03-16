@@ -59,6 +59,7 @@ module "database" {
   db_engine                 = var.db_engine
   db_engine_version         = var.db_engine_version
   db_instance_class         = var.db_instance_class
+  db_port                   = var.db_port
   db_username               = var.db_username
   db_password               = var.db_password
   db_skip_final_snapshot    = var.db_skip_final_snapshot

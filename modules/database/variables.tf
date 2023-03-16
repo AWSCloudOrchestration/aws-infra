@@ -85,3 +85,8 @@ variable "db_environment" {
   type    = string
   default = null
 }
+
+variable "db_port" {
+  type = number
+  default = 3306
+}
