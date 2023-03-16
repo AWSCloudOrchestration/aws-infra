@@ -33,6 +33,8 @@ resource "aws_instance" "webapp-ec2" {
     rds_db_name             = var.rds_db_name
     s3_instance_bucket_name = var.s3_instance_bucket_name
     s3_aws_region           = var.s3_aws_region
+    webapp_env              = var.webapp_env
+    webapp_port             = var.webapp_port
   })
 
   root_block_device {
