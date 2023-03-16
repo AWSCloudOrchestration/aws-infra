@@ -94,6 +94,9 @@ module "instance" {
   s3_iam_instance_profile    = module.s3_iam.s3_iam_instance_profile
   s3_instance_bucket_name    = module.s3_bucket.s3_bucket_name
   s3_aws_region              = module.s3_bucket.s3_aws_region
+  webapp_env                 = var.webapp_env
+  webapp_port                = var.webapp_port
+
 }
 
 ## S3 Bucket

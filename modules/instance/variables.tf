@@ -85,3 +85,13 @@ variable "ec2_disable_api_termination" {
   type    = bool
   default = false
 }
+
+variable "webapp_env" {
+  type    = string
+  default = null
+}
+
+variable "webapp_port" {
+  type    = number
+  default = 3001
+}

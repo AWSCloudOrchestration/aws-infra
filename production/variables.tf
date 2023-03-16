@@ -104,6 +104,16 @@ variable "s3_aws_region" {
   default = null
 }
 
+variable "webapp_env" {
+  type    = string
+  default = "production"
+}
+
+variable "webapp_port" {
+  type    = number
+  default = 3001
+}
+
 // RDS variables
 
 variable "db_parameter_group_name" {
@@ -207,7 +217,7 @@ variable "db_vpc_security_group_ids" {
 }
 
 variable "db_port" {
-  type = number
+  type    = number
   default = 3306
 }
 
@@ -375,9 +385,9 @@ variable "route53_zone_name" {
 
 variable "route53_dns_records" {
   type = list(object({
-    name    = string
-    type    = string
-    ttl     = number
+    name = string
+    type = string
+    ttl  = number
   }))
   default = null
 }
@@ -388,11 +398,11 @@ variable "route53_records_value" {
 }
 
 variable "route53_alias_name" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "route53_alias_type" {
-  type = string
+  type    = string
   default = "A"
 }
