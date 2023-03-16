@@ -8,6 +8,7 @@ public_subnets_cidr                 = ["10.1.1.0/24", "10.1.2.0/24", "10.1.3.0/2
 private_subnets_cidr                = ["10.1.4.0/24", "10.1.5.0/24", "10.1.6.0/24"]
 public_route_destination_cidr_block = "0.0.0.0/0"
 preferred_availability_zones        = []
+ebs_size                            = 50
 db_password                         = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9"
 route53_zone_name                   = "prod.gnanasekarkaushik.me"
 route53_alias_name                  = "www.prod.gnanasekarkaushik.me"
