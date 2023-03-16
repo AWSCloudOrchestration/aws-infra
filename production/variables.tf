@@ -206,6 +206,11 @@ variable "db_vpc_security_group_ids" {
   default = null
 }
 
+variable "db_port" {
+  type = number
+  default = 3306
+}
+
 // Application SG rules
 
 variable "application_sg_ingress_rules" {
@@ -377,3 +382,17 @@ variable "route53_dns_records" {
   default = null
 }
 
+variable "route53_records_value" {
+  type    = list(string)
+  default = null
+}
+
+variable "route53_alias_name" {
+  type = string
+  default = null
+}
+
+variable "route53_alias_type" {
+  type = string
+  default = "A"
+}
