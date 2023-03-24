@@ -35,6 +35,15 @@ resource "aws_instance" "webapp-ec2" {
     s3_aws_region           = var.s3_aws_region
     webapp_env              = var.webapp_env
     webapp_port             = var.webapp_port
+    sql_max_pool_conn       = var.sql_max_pool_conn
+    sql_max_retries         = var.sql_max_retries
+    statsd_host             = var.statsd_host
+    statsd_port             = var.statsd_port
+    statsd_prefix           = var.statsd_prefix
+    statsd_cache_dns        = var.statsd_cache_dns
+    app_logs_dirname        = var.app_logs_dirname
+    app_error_logs_dirname  = var.app_error_logs_dirname
+    cw_config_path          = var.cw_config_path
   })
 
   root_block_device {

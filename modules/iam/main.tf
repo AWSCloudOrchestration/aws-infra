@@ -2,7 +2,7 @@
 ## IAM MODULE
 ## ------------------------------------------
 
-## IAM policy
+## S3 IAM policy
 resource "aws_iam_policy" "s3_iam_policy" {
   name        = var.s3_iam_policy_name
   path        = "/"
@@ -45,9 +45,15 @@ resource "aws_iam_role" "ec2_iam_role" {
   }
 }
 
-## IAM role-policy attachment
+## IAM role-policy attachment for s3
 resource "aws_iam_role_policy_attachment" "s3_policy_attachment" {
   policy_arn = aws_iam_policy.s3_iam_policy.arn
+  role       = aws_iam_role.ec2_iam_role.name
+}
+
+## IAM role policy attachement for cloudwatch
+resource "aws_iam_role_policy_attachment" "cw_policy_attachment" {
+  policy_arn = var.cw_agent_server_policy_arn
   role       = aws_iam_role.ec2_iam_role.name
 }
 

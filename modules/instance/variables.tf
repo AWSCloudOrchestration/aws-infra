@@ -95,3 +95,48 @@ variable "webapp_port" {
   type    = number
   default = 3001
 }
+
+variable "sql_max_pool_conn" {
+  type    = number
+  default = 10
+}
+
+variable "sql_max_retries" {
+  type    = number
+  default = 3
+}
+
+variable "statsd_host" {
+  type    = string
+  default = "localhost"
+}
+
+variable "statsd_port" {
+  type    = number
+  default = 8125
+}
+
+variable "statsd_prefix" {
+  type    = string
+  default = "webapp"
+}
+
+variable "statsd_cache_dns" {
+  type    = bool
+  default = true
+}
+
+variable "app_logs_dirname" {
+  type    = string
+  default = "/var/log/webapp"
+}
+
+variable "app_error_logs_dirname" {
+  type    = string
+  default = "/var/log/webapp"
+}
+
+variable "cw_config_path" {
+  type    = string
+  default = "/opt/cloudwatch-config.json"
+}
