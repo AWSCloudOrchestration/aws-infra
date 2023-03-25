@@ -1,3 +1,7 @@
+#############################################
+## SECURITY MODULE
+#############################################
+
 resource "aws_security_group" "webapp-sg" {
   name        = var.sg_name
   description = var.sg_description
