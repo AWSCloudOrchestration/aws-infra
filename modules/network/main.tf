@@ -1,3 +1,7 @@
+#############################################
+## NETWORK MODULE
+#############################################
+
 ## Random id 8 bit suffix
 resource "random_id" "suffix_id" {
   byte_length = 8
