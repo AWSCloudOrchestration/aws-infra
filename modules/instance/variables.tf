@@ -118,7 +118,7 @@ variable "statsd_port" {
 
 variable "statsd_prefix" {
   type    = string
-  default = "webapp"
+  default = "webapp_"
 }
 
 variable "statsd_cache_dns" {
