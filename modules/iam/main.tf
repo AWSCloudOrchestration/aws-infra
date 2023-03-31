@@ -23,6 +23,39 @@ resource "aws_iam_policy" "s3_iam_policy" {
   })
 }
 
+## Cloudwatch policy
+resource "aws_iam_policy" "cloudwatch_policy" {
+
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "cloudwatch:PutMetricData",
+          "ec2:DescribeVolumes",
+          "ec2:DescribeTags",
+          "logs:PutLogEvents",
+          "logs:DescribeLogStreams",
+          "logs:DescribeLogGroups",
+          "logs:CreateLogStream",
+          "logs:CreateLogGroup"
+        ],
+        "Resource" : [
+          "arn:aws:logs:*:*:log-group:csye6225:*"
+        ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "ssm:GetParameter"
+        ],
+        "Resource" : "arn:aws:ssm:*:*:parameter/AmazonCloudWatch-*"
+      }
+    ]
+  })
+}
+
 ## IAM role
 resource "aws_iam_role" "ec2_iam_role" {
   name = var.iam_role_name
@@ -53,7 +86,7 @@ resource "aws_iam_role_policy_attachment" "s3_policy_attachment" {
 
 ## IAM role policy attachement for cloudwatch
 resource "aws_iam_role_policy_attachment" "cw_policy_attachment" {
-  policy_arn = var.cw_agent_server_policy_arn
+  policy_arn = aws_iam_policy.cloudwatch_policy.arn
   role       = aws_iam_role.ec2_iam_role.name
 }
 
