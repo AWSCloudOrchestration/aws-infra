@@ -38,3 +38,8 @@ variable "cw_agent_server_policy_arn" {
   type = string
   default = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
 }
+
+variable "cw_policy_name" {
+  type = string
+  default = "WebAppCloudWatchPolicy"
+}
