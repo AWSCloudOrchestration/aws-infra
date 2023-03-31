@@ -25,6 +25,7 @@ resource "aws_iam_policy" "s3_iam_policy" {
 
 ## Cloudwatch policy
 resource "aws_iam_policy" "cloudwatch_policy" {
+  name = var.cw_policy_name
 
   policy = jsonencode({
     "Version" : "2012-10-17",
@@ -32,9 +33,6 @@ resource "aws_iam_policy" "cloudwatch_policy" {
       {
         "Effect" : "Allow",
         "Action" : [
-          "cloudwatch:PutMetricData",
-          "ec2:DescribeVolumes",
-          "ec2:DescribeTags",
           "logs:PutLogEvents",
           "logs:DescribeLogStreams",
           "logs:DescribeLogGroups",
@@ -42,8 +40,15 @@ resource "aws_iam_policy" "cloudwatch_policy" {
           "logs:CreateLogGroup"
         ],
         "Resource" : [
-          "arn:aws:logs:*:*:log-group:csye6225:*"
+          "arn:aws:logs:*:*:log-group:csye6225:*",
         ]
+      },
+      {
+        "Effect" : "Allow",
+        "Action" : [
+          "cloudwatch:PutMetricData",
+        ],
+        "Resource" : "*"
       },
       {
         "Effect" : "Allow",
