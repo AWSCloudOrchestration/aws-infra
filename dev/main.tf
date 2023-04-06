@@ -106,7 +106,7 @@ module "instance" {
   ]
   ec2_source_ami             = var.ec2_source_ami
   ec2_instance_type          = var.ec2_instance_type
-  ec2_target_subnet_id       = module.network.public_subnet_ids[0].id
+  ec2_target_subnet_id       = [module.network.public_subnet_ids[0].id, module.network.public_subnet_ids[1].id, module.network.public_subnet_ids[2].id]
   ebs_size                   = var.ebs_size
   ebs_type                   = var.ebs_type
   application_sg_name        = var.application_sg_name

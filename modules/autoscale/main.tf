@@ -70,14 +70,16 @@ resource "aws_autoscaling_group" "asg" {
   depends_on = [
     aws_launch_template.launch_template
   ]
-  name                  = var.asg_name
-  min_size              = var.asg_min_size
-  max_size              = var.asg_max_size
-  default_cooldown      = var.asg_default_cooldown
-  desired_capacity      = var.asg_desired_capacity
-  desired_capacity_type = var.asg_desired_capacity_type
-  vpc_zone_identifier   = [var.ec2_target_subnet_id]
-  target_group_arns     = var.alb_target_group_arns
+  name                      = var.asg_name
+  min_size                  = var.asg_min_size
+  max_size                  = var.asg_max_size
+  desired_capacity          = var.asg_desired_capacity
+  vpc_zone_identifier       = var.ec2_target_subnet_id
+  target_group_arns         = var.alb_target_group_arns
+  termination_policies      = ["OldestInstance"]
+  health_check_grace_period = 100
+  health_check_type         = "EC2"
+  force_delete              = true
 
   launch_template {
     id      = aws_launch_template.launch_template.id
@@ -86,7 +88,7 @@ resource "aws_autoscaling_group" "asg" {
 
   lifecycle {
     create_before_destroy = true
-    ignore_changes        = [desired_capacity, target_group_arns]
+    # ignore_changes        = [desired_capacity, target_group_arns]
   }
 
   tag {
@@ -103,42 +105,7 @@ resource "aws_autoscaling_policy" "autoscale_up_policy" {
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = 1 // Number of instances by which to scale
   enabled                = true
-  #   min_adjustment_magnitude = 5 // PercentChangeInCapacity
-  cooldown = 30
-}
-
-resource "aws_cloudwatch_metric_alarm" "scale_up" {
-  alarm_description   = "Monitors CPU utilization for Webapp ASG"
-  alarm_actions       = [aws_autoscaling_policy.autoscale_up_policy.arn]
-  alarm_name          = "webapp_scale_up"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  namespace           = "AWS/EC2"
-  metric_name         = "CPUUtilization"
-  threshold           = 2
-  evaluation_periods  = 1
-  period              = 10
-  statistic           = "Average"
-
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.asg.name
-  }
-}
-
-resource "aws_cloudwatch_metric_alarm" "scale_down" {
-  alarm_description   = "Monitors CPU utilization for Webapp ASG"
-  alarm_actions       = [aws_autoscaling_policy.autoscale_down_policy.arn]
-  alarm_name          = "webapp_scale_down"
-  comparison_operator = "LessThanOrEqualToThreshold"
-  namespace           = "AWS/EC2"
-  metric_name         = "CPUUtilization"
-  threshold           = 3
-  evaluation_periods  = 1
-  period              = 10
-  statistic           = "Average"
-
-  dimensions = {
-    AutoScalingGroupName = aws_autoscaling_group.asg.name
-  }
+  cooldown               = 60
 }
 
 # Autoscale down policy
@@ -148,9 +115,48 @@ resource "aws_autoscaling_policy" "autoscale_down_policy" {
   adjustment_type        = "ChangeInCapacity"
   scaling_adjustment     = -1 // Number of instances by which to scale
   enabled                = true
-  #   min_adjustment_magnitude = 3 // PercentChangeInCapacity
-  cooldown = 30
+  cooldown               = 60
 }
+
+## Cloudwatch alarm for scale up
+resource "aws_cloudwatch_metric_alarm" "scale_up" {
+  alarm_description   = "Monitors CPU utilization for Webapp ASG"
+  actions_enabled     = true
+  alarm_actions       = [aws_autoscaling_policy.autoscale_up_policy.arn]
+  alarm_name          = "webapp_scale_up"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  namespace           = "AWS/EC2"
+  metric_name         = "CPUUtilization"
+  threshold           = 10
+  evaluation_periods  = 2
+  period              = 60
+  statistic           = "Average"
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.asg.name
+  }
+}
+
+## Cloudwatch alarm for scale down
+resource "aws_cloudwatch_metric_alarm" "scale_down" {
+  alarm_description   = "Monitors CPU utilization for Webapp ASG"
+  actions_enabled     = true
+  alarm_actions       = [aws_autoscaling_policy.autoscale_down_policy.arn]
+  alarm_name          = "webapp_scale_down"
+  comparison_operator = "LessThanOrEqualToThreshold"
+  namespace           = "AWS/EC2"
+  metric_name         = "CPUUtilization"
+  threshold           = 5
+  evaluation_periods  = 2
+  period              = 60
+  statistic           = "Average"
+
+  dimensions = {
+    AutoScalingGroupName = aws_autoscaling_group.asg.name
+  }
+}
+
+
 
 
 

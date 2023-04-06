@@ -4,7 +4,7 @@ variable "ec2_source_ami" {
 }
 
 variable "ec2_target_subnet_id" {
-  type    = string
+  type    = list(any)
   default = null
 }
 

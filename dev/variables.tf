@@ -50,7 +50,7 @@ variable "ec2_source_ami" {
 }
 
 variable "ec2_target_subnet_id" {
-  type    = string
+  type    = list(any)
   default = null
 }
 
@@ -280,13 +280,13 @@ variable "application_sg_ingress_rules" {
       from_port   = 22
       to_port     = 22
       protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
+      cidr_blocks = null
     },
     {
       from_port   = 3001
       to_port     = 3001
       protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
+      cidr_blocks = null
     }
   ]
 }
