@@ -3,11 +3,16 @@ variable "route53_zone_name" {
   default = null
 }
 
+variable "route53_zone_id" {
+  type    = string
+  default = null
+}
+
 variable "route53_dns_records" {
   type = list(object({
-    name    = string
-    type    = string
-    ttl     = number
+    name = string
+    type = string
+    ttl  = number
   }))
   default = null
 }
@@ -23,11 +28,21 @@ variable "route53_records_value" {
 }
 
 variable "route53_alias_name" {
-  type = string
+  type    = string
   default = null
 }
 
 variable "route53_alias_type" {
-  type = string
+  type    = string
   default = "A"
+}
+
+variable "alb_dns_name" {
+  type    = string
+  default = null
+}
+
+variable "alb_zone_id" {
+  type    = string
+  default = null
 }
