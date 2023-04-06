@@ -42,10 +42,10 @@ resource "aws_launch_template" "launch_template" {
     cw_config_path          = var.cw_config_path
   }))
 
-#   network_interfaces {
-#     associate_public_ip_address = true
-#     delete_on_termination       = true
-#   }
+  #   network_interfaces {
+  #     associate_public_ip_address = true
+  #     delete_on_termination       = true
+  #   }
 
   iam_instance_profile {
     arn = var.s3_iam_instance_profile
@@ -86,6 +86,7 @@ resource "aws_autoscaling_group" "asg" {
 
   lifecycle {
     create_before_destroy = true
+    ignore_changes        = [desired_capacity, target_group_arns]
   }
 
   tag {
@@ -97,13 +98,13 @@ resource "aws_autoscaling_group" "asg" {
 
 ## Autoscale up policy
 resource "aws_autoscaling_policy" "autoscale_up_policy" {
-  name                     = var.asp_up_name
-  autoscaling_group_name   = aws_autoscaling_group.asg.name
-  adjustment_type          = "ChangeInCapacity"
-  scaling_adjustment       = 1 // Number of instances by which to scale
-  enabled                  = true
-#   min_adjustment_magnitude = 5 // PercentChangeInCapacity
-  cooldown                 = 30
+  name                   = var.asp_up_name
+  autoscaling_group_name = aws_autoscaling_group.asg.name
+  adjustment_type        = "ChangeInCapacity"
+  scaling_adjustment     = 1 // Number of instances by which to scale
+  enabled                = true
+  #   min_adjustment_magnitude = 5 // PercentChangeInCapacity
+  cooldown = 30
 }
 
 resource "aws_cloudwatch_metric_alarm" "scale_up" {
@@ -142,13 +143,13 @@ resource "aws_cloudwatch_metric_alarm" "scale_down" {
 
 # Autoscale down policy
 resource "aws_autoscaling_policy" "autoscale_down_policy" {
-  name                     = var.asp_down_name
-  autoscaling_group_name   = aws_autoscaling_group.asg.name
-  adjustment_type          = "ChangeInCapacity"
-  scaling_adjustment       = -1 // Number of instances by which to scale
-  enabled                  = true
-#   min_adjustment_magnitude = 3 // PercentChangeInCapacity
-  cooldown                 = 30
+  name                   = var.asp_down_name
+  autoscaling_group_name = aws_autoscaling_group.asg.name
+  adjustment_type        = "ChangeInCapacity"
+  scaling_adjustment     = -1 // Number of instances by which to scale
+  enabled                = true
+  #   min_adjustment_magnitude = 3 // PercentChangeInCapacity
+  cooldown = 30
 }
 
 
