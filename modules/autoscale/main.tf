@@ -42,17 +42,17 @@ resource "aws_launch_template" "launch_template" {
     cw_config_path          = var.cw_config_path
   }))
 
-  #   network_interfaces {
-  #     associate_public_ip_address = true
-  #     delete_on_termination       = true
-  #   }
+  network_interfaces {
+    associate_public_ip_address = true
+    delete_on_termination       = true
+  }
 
   iam_instance_profile {
     arn = var.s3_iam_instance_profile
   }
 
   block_device_mappings {
-    device_name = "/dev/xvda"
+    device_name = var.block_device_name
     ebs {
       volume_size           = var.ebs_size
       volume_type           = var.ebs_type
@@ -76,19 +76,17 @@ resource "aws_autoscaling_group" "asg" {
   desired_capacity          = var.asg_desired_capacity
   vpc_zone_identifier       = var.ec2_target_subnet_id
   target_group_arns         = var.alb_target_group_arns
-  termination_policies      = ["OldestInstance"]
-  health_check_grace_period = 100
-  health_check_type         = "EC2"
-  force_delete              = true
+  termination_policies      = var.asg_termination_policies
+  health_check_grace_period = var.asg_health_check_grace_period
+  health_check_type         = var.asg_health_check_type
 
   launch_template {
     id      = aws_launch_template.launch_template.id
-    version = "$Latest"
+    version = var.launch_template_version
   }
 
   lifecycle {
     create_before_destroy = true
-    # ignore_changes        = [desired_capacity, target_group_arns]
   }
 
   tag {
@@ -102,54 +100,54 @@ resource "aws_autoscaling_group" "asg" {
 resource "aws_autoscaling_policy" "autoscale_up_policy" {
   name                   = var.asp_up_name
   autoscaling_group_name = aws_autoscaling_group.asg.name
-  adjustment_type        = "ChangeInCapacity"
-  scaling_adjustment     = 1 // Number of instances by which to scale
-  enabled                = true
-  cooldown               = 60
+  adjustment_type        = var.asp_up_adjustment_type
+  scaling_adjustment     = var.asp_up_scaling_adjustment
+  enabled                = var.asp_up_enabled
+  cooldown               = var.asp_up_cooldown
 }
 
 # Autoscale down policy
 resource "aws_autoscaling_policy" "autoscale_down_policy" {
   name                   = var.asp_down_name
   autoscaling_group_name = aws_autoscaling_group.asg.name
-  adjustment_type        = "ChangeInCapacity"
-  scaling_adjustment     = -1 // Number of instances by which to scale
-  enabled                = true
-  cooldown               = 60
+  adjustment_type        = var.asp_down_adjustment_type
+  scaling_adjustment     = var.asp_down_scaling_adjustment
+  enabled                = var.asp_down_enabled
+  cooldown               = var.asp_down_cooldown
 }
 
-## Cloudwatch alarm for scale up
+## Cloudwatch alarm for scale up by CPU utilization
 resource "aws_cloudwatch_metric_alarm" "scale_up" {
   alarm_description   = "Monitors CPU utilization for Webapp ASG"
-  actions_enabled     = true
+  actions_enabled     = var.cma_up_actions_enabled
   alarm_actions       = [aws_autoscaling_policy.autoscale_up_policy.arn]
-  alarm_name          = "webapp_scale_up"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  namespace           = "AWS/EC2"
-  metric_name         = "CPUUtilization"
-  threshold           = 10
-  evaluation_periods  = 2
-  period              = 60
-  statistic           = "Average"
+  alarm_name          = var.cma_up_alarm_name
+  comparison_operator = var.cma_up_comparison_operator
+  namespace           = var.cma_up_namespace
+  metric_name         = var.cma_up_metric_name  
+  threshold           = var.cma_up_threshold
+  evaluation_periods  = var.cma_up_evaluation_periods
+  period              = var.cma_up_period
+  statistic           = var.cma_up_statistic
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.asg.name
   }
 }
 
-## Cloudwatch alarm for scale down
+## Cloudwatch alarm for scale down by CPU utilization
 resource "aws_cloudwatch_metric_alarm" "scale_down" {
   alarm_description   = "Monitors CPU utilization for Webapp ASG"
-  actions_enabled     = true
+  actions_enabled     = var.cma_down_actions_enabled
   alarm_actions       = [aws_autoscaling_policy.autoscale_down_policy.arn]
-  alarm_name          = "webapp_scale_down"
-  comparison_operator = "LessThanOrEqualToThreshold"
-  namespace           = "AWS/EC2"
-  metric_name         = "CPUUtilization"
-  threshold           = 5
-  evaluation_periods  = 2
-  period              = 60
-  statistic           = "Average"
+  alarm_name          = var.cma_down_alarm_name
+  comparison_operator = var.cma_down_comparison_operator
+  namespace           = var.cma_down_namespace
+  metric_name         = var.cma_down_metric_name
+  threshold           = var.cma_down_threshold
+  evaluation_periods  = var.cma_down_evaluation_periods
+  period              = var.cma_down_period
+  statistic           = var.cma_down_statistic
 
   dimensions = {
     AutoScalingGroupName = aws_autoscaling_group.asg.name
