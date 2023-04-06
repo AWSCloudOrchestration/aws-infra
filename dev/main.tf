@@ -22,12 +22,13 @@ module "application_sg" {
   depends_on = [
     module.network
   ]
-  sg_name          = var.application_sg_name
-  sg_description   = var.application_sg_description
-  sg_target_vpc_id = module.network.vpc_id
-  sg_environment   = var.environment
-  sg_ingress_rules = var.application_sg_ingress_rules
-  sg_egress_rules  = var.application_sg_egress_rules
+  sg_name                 = var.application_sg_name
+  sg_description          = var.application_sg_description
+  sg_target_vpc_id        = module.network.vpc_id
+  sg_environment          = var.environment
+  sg_ingress_rules        = var.application_sg_ingress_rules
+  sg_egress_rules         = var.application_sg_egress_rules
+  ingress_security_groups = [module.lb_sg.security_group_id]
 }
 
 ## RDS security group
@@ -43,6 +44,20 @@ module "rds_sg" {
   sg_ingress_rules        = var.rds_sg_ingress_rules
   sg_egress_rules         = var.rds_sg_egress_rules
   ingress_security_groups = [module.application_sg.security_group_id]
+}
+
+## LB security group
+module "lb_sg" {
+  source = "../modules/security"
+  depends_on = [
+    module.network
+  ]
+  sg_name          = var.lb_sg_name
+  sg_description   = var.lb_sg_description
+  sg_target_vpc_id = module.network.vpc_id
+  sg_environment   = var.environment
+  sg_ingress_rules = var.lb_sg_ingress_rules
+  sg_egress_rules  = var.lb_sg_egress_rules
 }
 
 
@@ -70,9 +85,20 @@ module "database" {
   db_environment            = var.environment
 }
 
-## Instance
+## Application Load Balancer
+module "webapp_alb" {
+  source = "../modules/lb"
+
+  lb_environment       = var.environment
+  alb_security_groups  = [module.lb_sg.security_group_id]
+  alb_subnets          = [module.network.public_subnet_ids[0].id, module.network.public_subnet_ids[1].id, module.network.public_subnet_ids[2].id]
+  alb_tg_vpc_id        = module.network.vpc_id
+  autoscaling_group_id = module.instance.autoscaling_group_id
+}
+
+## Autoscalable Instance
 module "instance" {
-  source = "../modules/instance"
+  source = "../modules/autoscale"
   depends_on = [
     module.database,
     module.s3_iam,
@@ -91,7 +117,7 @@ module "instance" {
   rds_password               = var.db_password
   rds_db_name                = var.db_name
   ec2_vpc_security_group_ids = [module.application_sg.security_group_id]
-  s3_iam_instance_profile    = module.s3_iam.s3_iam_instance_profile
+  s3_iam_instance_profile    = module.s3_iam.s3_iam_instance_profile_arn
   s3_instance_bucket_name    = module.s3_bucket.s3_bucket_name
   s3_aws_region              = module.s3_bucket.s3_aws_region
   webapp_env                 = var.webapp_env
@@ -105,6 +131,7 @@ module "instance" {
   app_logs_dirname           = var.app_logs_dirname
   app_error_logs_dirname     = var.app_error_logs_dirname
   cw_config_path             = var.cw_config_path
+  alb_target_group_arns      = module.webapp_alb.alb_target_group_arns
 }
 
 ## S3 Bucket
@@ -130,13 +157,16 @@ module "s3_iam" {
 
 }
 
-## Route 53
+# Route 53
 module "route_53" {
   source = "../modules/dns"
 
-  route53_zone_name     = var.route53_zone_name
-  route53_dns_records   = var.route53_dns_records
-  route53_records_value = [module.instance.ec2_public_ip]
-  route53_alias_name    = var.route53_alias_name
-  route53_alias_type    = var.route53_alias_type
+  route53_zone_name   = var.route53_zone_name
+  route53_dns_records = var.route53_dns_records
+  # route53_records_value = [module.webapp_alb.alb_dns_name]
+  route53_alias_name = var.route53_alias_name
+  route53_alias_type = var.route53_alias_type
+  alb_dns_name       = module.webapp_alb.alb_dns_name
+  alb_zone_id        = module.webapp_alb.alb_zone_id
+
 }
