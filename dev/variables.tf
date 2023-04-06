@@ -441,7 +441,7 @@ variable "route53_alias_type" {
 }
 
 variable "alb_dns_name" {
-  type = string
+  type    = string
   default = null
 }
 
@@ -505,17 +505,17 @@ variable "lb_environment" {
 }
 
 variable "alb_security_groups" {
-  type = list
+  type    = list(any)
   default = null
 }
 
 variable "alb_subnets" {
-  type = list
+  type    = list(any)
   default = null
 }
 
 variable "alb_tg_vpc_id" {
-  type = string
+  type    = string
   default = null
 }
 
@@ -525,7 +525,7 @@ variable "autoscaling_group_id" {
 }
 
 variable "alb_target_group_arns" {
-  type = list(string)
+  type    = list(string)
   default = null
 }
 
