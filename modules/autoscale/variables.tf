@@ -185,16 +185,173 @@ variable "asg_desired_capacity_type" {
 }
 
 variable "asp_up_name" {
-  type = string
+  type    = string
   default = "webapp-asp-up"
 }
 
 variable "asp_down_name" {
-  type = string
+  type    = string
   default = "webapp-asp-down"
 }
 
 variable "alb_target_group_arns" {
-  type = list(string)
+  type    = list(string)
   default = null
+}
+
+variable "block_device_name" {
+  type    = string
+  default = "/dev/xvda"
+}
+
+variable "asg_health_check_grace_period" {
+  type    = number
+  default = 100
+}
+
+variable "asg_health_check_type" {
+  type    = string
+  default = "EC2"
+}
+
+variable "launch_template_version" {
+  type    = string
+  default = "$Latest"
+}
+
+variable "asp_up_cooldown" {
+  type    = number
+  default = 60
+}
+
+variable "asp_up_scaling_adjustment" {
+  description = "Number of instances by which to scale"
+  type        = number
+  default     = 1
+}
+
+variable "asp_down_scaling_adjustment" {
+  description = "Number of instances by which to scale"
+  type        = number
+  default     = -1
+}
+
+variable "asp_down_cooldown" {
+  type    = number
+  default = 60
+}
+
+variable "asp_up_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "asp_down_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "asp_up_adjustment_type" {
+  type    = string
+  default = "ChangeInCapacity"
+}
+
+variable "asp_down_adjustment_type" {
+  type    = string
+  default = "ChangeInCapacity"
+}
+
+variable "asg_termination_policies" {
+  type    = list(string)
+  default = ["OldestInstance"]
+}
+
+variable "cma_up_threshold" {
+  type    = number
+  default = 10
+}
+
+variable "cma_up_evaluation_periods" {
+  type    = number
+  default = 2
+}
+
+variable "cma_up_period" {
+  type    = number
+  default = 60
+}
+
+variable "cma_up_statistic" {
+  type    = string
+  default = "Average"
+}
+
+variable "cma_up_actions_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "cma_up_alarm_name" {
+  type    = string
+  default = "webapp_scale_up"
+}
+
+variable "cma_up_comparison_operator" {
+  type    = string
+  default = "GreaterThanOrEqualToThreshold"
+}
+
+variable "cma_up_namespace" {
+  type    = string
+  default = "AWS/EC2"
+}
+
+variable "cma_up_metric_name" {
+  type    = string
+  default = "CPUUtilization"
+}
+
+variable "cma_down_actions_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "cma_down_alarm_name" {
+  type    = string
+  default = "webapp_scale_down"
+}
+
+variable "cma_down_comparison_operator" {
+  type    = string
+  default = "LessThanOrEqualToThreshold"
+}
+
+variable "cma_down_namespace" {
+  type    = string
+  default = "AWS/EC2"
+}
+
+variable "cma_down_metric_name" {
+  type    = string
+  default = "CPUUtilization"
+}
+
+variable "cma_down_threshold" {
+  type    = number
+  default = 5
+}
+
+variable "cma_down_evaluation_periods" {
+  type    = number
+  default = 2
+}
+
+variable "cma_down_period" {
+  type    = number
+  default = 60
+}
+
+variable "cma_down_statistic" {
+  type    = string
+  default = "Average"
 }
