@@ -277,12 +277,6 @@ variable "application_sg_ingress_rules" {
   }))
   default = [
     {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = null
-    },
-    {
       from_port   = 3001
       to_port     = 3001
       protocol    = "tcp"

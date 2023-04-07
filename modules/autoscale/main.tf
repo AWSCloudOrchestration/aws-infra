@@ -18,7 +18,6 @@ resource "aws_launch_template" "launch_template" {
   image_id                             = var.ec2_source_ami == null ? data.aws_ami.custom_ami.id : var.ec2_source_ami
   instance_type                        = var.ec2_instance_type
   key_name                             = var.instance_key_name
-  vpc_security_group_ids               = var.ec2_vpc_security_group_ids
   disable_api_termination              = var.ec2_disable_api_termination
   instance_initiated_shutdown_behavior = "terminate"
 
@@ -45,6 +44,7 @@ resource "aws_launch_template" "launch_template" {
   network_interfaces {
     associate_public_ip_address = true
     delete_on_termination       = true
+    security_groups = var.ec2_vpc_security_group_ids
   }
 
   iam_instance_profile {
