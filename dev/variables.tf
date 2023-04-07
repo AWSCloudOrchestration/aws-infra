@@ -523,4 +523,14 @@ variable "alb_target_group_arns" {
   default = null
 }
 
+variable "instance_associate_public_ip_address" {
+  type = bool
+  default = true
+}
+
+variable "instance_delete_on_termination" {
+  type = bool
+  default = true
+}
+
 

@@ -355,3 +355,13 @@ variable "cma_down_statistic" {
   type    = string
   default = "Average"
 }
+
+variable "instance_associate_public_ip_address" {
+  type = bool
+  default = true
+}
+
+variable "instance_delete_on_termination" {
+  type = bool
+  default = true
+}

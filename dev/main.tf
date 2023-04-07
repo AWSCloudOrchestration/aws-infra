@@ -104,34 +104,36 @@ module "instance" {
     module.s3_iam,
     module.s3_bucket
   ]
-  ec2_source_ami             = var.ec2_source_ami
-  ec2_instance_type          = var.ec2_instance_type
-  ec2_target_subnet_id       = [module.network.public_subnet_ids[0].id, module.network.public_subnet_ids[1].id, module.network.public_subnet_ids[2].id]
-  ebs_size                   = var.ebs_size
-  ebs_type                   = var.ebs_type
-  application_sg_name        = var.application_sg_name
-  ec2_sg_target_vpc_id       = module.network.vpc_id
-  instance_environment       = var.environment
-  rds_address                = module.database.db_instance_address
-  rds_username               = var.db_username
-  rds_password               = var.db_password
-  rds_db_name                = var.db_name
-  ec2_vpc_security_group_ids = [module.application_sg.security_group_id]
-  s3_iam_instance_profile    = module.s3_iam.s3_iam_instance_profile_arn
-  s3_instance_bucket_name    = module.s3_bucket.s3_bucket_name
-  s3_aws_region              = module.s3_bucket.s3_aws_region
-  webapp_env                 = var.webapp_env
-  webapp_port                = var.webapp_port
-  sql_max_pool_conn          = var.sql_max_pool_conn
-  sql_max_retries            = var.sql_max_retries
-  statsd_host                = var.statsd_host
-  statsd_port                = var.statsd_port
-  statsd_prefix              = var.statsd_prefix
-  statsd_cache_dns           = var.statsd_cache_dns
-  app_logs_dirname           = var.app_logs_dirname
-  app_error_logs_dirname     = var.app_error_logs_dirname
-  cw_config_path             = var.cw_config_path
-  alb_target_group_arns      = module.webapp_alb.alb_target_group_arns
+  ec2_source_ami                       = var.ec2_source_ami
+  ec2_instance_type                    = var.ec2_instance_type
+  ec2_target_subnet_id                 = [module.network.public_subnet_ids[0].id, module.network.public_subnet_ids[1].id, module.network.public_subnet_ids[2].id]
+  ebs_size                             = var.ebs_size
+  ebs_type                             = var.ebs_type
+  application_sg_name                  = var.application_sg_name
+  ec2_sg_target_vpc_id                 = module.network.vpc_id
+  instance_environment                 = var.environment
+  rds_address                          = module.database.db_instance_address
+  rds_username                         = var.db_username
+  rds_password                         = var.db_password
+  rds_db_name                          = var.db_name
+  ec2_vpc_security_group_ids           = [module.application_sg.security_group_id]
+  s3_iam_instance_profile              = module.s3_iam.s3_iam_instance_profile_arn
+  s3_instance_bucket_name              = module.s3_bucket.s3_bucket_name
+  s3_aws_region                        = module.s3_bucket.s3_aws_region
+  webapp_env                           = var.webapp_env
+  webapp_port                          = var.webapp_port
+  sql_max_pool_conn                    = var.sql_max_pool_conn
+  sql_max_retries                      = var.sql_max_retries
+  statsd_host                          = var.statsd_host
+  statsd_port                          = var.statsd_port
+  statsd_prefix                        = var.statsd_prefix
+  statsd_cache_dns                     = var.statsd_cache_dns
+  app_logs_dirname                     = var.app_logs_dirname
+  app_error_logs_dirname               = var.app_error_logs_dirname
+  cw_config_path                       = var.cw_config_path
+  alb_target_group_arns                = module.webapp_alb.alb_target_group_arns
+  instance_associate_public_ip_address = var.instance_associate_public_ip_address
+  instance_delete_on_termination       = var.instance_delete_on_termination
 }
 
 ## S3 Bucket
@@ -163,10 +165,9 @@ module "route_53" {
 
   route53_zone_name   = var.route53_zone_name
   route53_dns_records = var.route53_dns_records
-  # route53_records_value = [module.webapp_alb.alb_dns_name]
-  route53_alias_name = var.route53_alias_name
-  route53_alias_type = var.route53_alias_type
-  alb_dns_name       = module.webapp_alb.alb_dns_name
-  alb_zone_id        = module.webapp_alb.alb_zone_id
+  route53_alias_name  = var.route53_alias_name
+  route53_alias_type  = var.route53_alias_type
+  alb_dns_name        = module.webapp_alb.alb_dns_name
+  alb_zone_id         = module.webapp_alb.alb_zone_id
 
 }
