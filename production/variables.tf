@@ -1,7 +1,8 @@
+// Network module variables
 variable "region" {
   type        = string
   description = "AWS Deployment region"
-  default     = "us-east-2"
+  default     = "us-east-1"
 }
 
 variable "preferred_availability_zones" {
@@ -50,7 +51,7 @@ variable "ec2_source_ami" {
 }
 
 variable "ec2_target_subnet_id" {
-  type    = string
+  type    = list(any)
   default = null
 }
 
@@ -277,28 +278,10 @@ variable "application_sg_ingress_rules" {
   }))
   default = [
     {
-      from_port   = 443
-      to_port     = 443
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      from_port   = 22
-      to_port     = 22
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
       from_port   = 3001
       to_port     = 3001
       protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
+      cidr_blocks = null
     }
   ]
 }
@@ -451,3 +434,94 @@ variable "route53_alias_type" {
   type    = string
   default = "A"
 }
+
+variable "alb_dns_name" {
+  type    = string
+  default = null
+}
+
+variable "alb_zone_id" {
+  type    = string
+  default = null
+}
+
+// Load Balancer SG rules
+variable "lb_sg_ingress_rules" {
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+  default = [
+    {
+      from_port   = 443
+      to_port     = 443
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
+    {
+      from_port   = 80
+      to_port     = 80
+      protocol    = "tcp"
+      cidr_blocks = ["0.0.0.0/0"]
+    },
+  ]
+}
+
+variable "lb_sg_egress_rules" {
+  type = list(object({
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+  default = [{
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }]
+}
+
+variable "lb_sg_name" {
+  type    = string
+  default = "loadbalancer"
+}
+
+variable "lb_sg_description" {
+  type    = string
+  default = "LB security group"
+}
+
+variable "lb_environment" {
+  type    = string
+  default = null
+}
+
+variable "alb_security_groups" {
+  type    = list(any)
+  default = null
+}
+
+variable "alb_subnets" {
+  type    = list(any)
+  default = null
+}
+
+variable "alb_tg_vpc_id" {
+  type    = string
+  default = null
+}
+
+variable "autoscaling_group_id" {
+  type    = string
+  default = null
+}
+
+variable "alb_target_group_arns" {
+  type    = list(string)
+  default = null
+}
+
+
