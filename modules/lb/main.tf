@@ -23,11 +23,13 @@ resource "aws_lb" "application_lb" {
 
 ## Instance Target Group
 resource "aws_lb_target_group" "alb_tg" {
-  name        = var.alb_tg_name
-  port        = var.alb_target_port
-  protocol    = var.alb_tg_protocol
-  target_type = "instance"
-  vpc_id      = var.alb_tg_vpc_id
+  name                          = var.alb_tg_name
+  port                          = var.alb_target_port
+  protocol                      = var.alb_tg_protocol
+  load_balancing_algorithm_type = var.alb_algorithm_type
+  target_type                   = var.alb_target_type
+  vpc_id                        = var.alb_tg_vpc_id
+  
   health_check {
     path = var.lb_health_path
   }

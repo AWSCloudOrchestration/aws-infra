@@ -163,9 +163,9 @@ module "route_53" {
 
   route53_zone_name   = var.route53_zone_name
   route53_dns_records = var.route53_dns_records
-  route53_alias_name = var.route53_alias_name
-  route53_alias_type = var.route53_alias_type
-  alb_dns_name       = module.webapp_alb.alb_dns_name
-  alb_zone_id        = module.webapp_alb.alb_zone_id
+  route53_alias_name  = var.route53_alias_name
+  route53_alias_type  = var.route53_alias_type
+  alb_dns_name        = module.webapp_alb.alb_dns_name
+  alb_zone_id         = module.webapp_alb.alb_zone_id
 
 }
