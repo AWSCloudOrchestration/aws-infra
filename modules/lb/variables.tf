@@ -44,46 +44,56 @@ variable "autoscaling_group_id" {
 }
 
 variable "alb_enable_cross_zone" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "alb_enable_deletion_protection" {
-  type = bool
+  type    = bool
   default = false
 }
 
 variable "alb_enable_http2" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "alb_ip_address_type" {
-  type = string
+  type    = string
   default = "ipv4"
 }
 
 variable "alb_preserve_host_header" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "lb_health_path" {
-  type = string
+  type    = string
   default = "/healthz"
 }
 
 variable "alb_listener_port" {
-  type = number
+  type    = number
   default = 80
 }
 
 variable "alb_listener_protocol" {
-  type = string
+  type    = string
   default = "HTTP"
 }
 
 variable "alb_listener_default_action_type" {
-  type = string
+  type    = string
   default = "forward"
+}
+
+variable "alb_target_type" {
+  type    = string
+  default = "instance"
+}
+
+variable "alb_algorithm_type" {
+  type    = string
+  default = "round_robin"
 }
