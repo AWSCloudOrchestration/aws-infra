@@ -42,8 +42,8 @@ resource "aws_launch_template" "launch_template" {
   }))
 
   network_interfaces {
-    associate_public_ip_address = true
-    delete_on_termination       = true
+    associate_public_ip_address = var.instance_associate_public_ip_address
+    delete_on_termination       = var.instance_delete_on_termination
     security_groups = var.ec2_vpc_security_group_ids
   }
 
