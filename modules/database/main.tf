@@ -2,6 +2,10 @@
 ## DATABASE MODULE
 #############################################
 
+module "globals" {
+  source = "../globals"
+}
+
 ## Parameter Group
 resource "aws_db_parameter_group" "mysql8-param-group" {
   name   = var.db_parameter_group_name
@@ -33,7 +37,7 @@ resource "aws_kms_key_policy" "rds_kms_policy" {
         "Sid": "Allow access for Key Administrators",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "arn:aws:iam::909205068394:user/awscli"
+          "AWS" : "arn:aws:iam::${module.globals.caller_account_id}:user/awscli"
         },
         "Action" : [
           "kms:Create*",
@@ -57,7 +61,7 @@ resource "aws_kms_key_policy" "rds_kms_policy" {
         "Sid" : "Allow use of the key",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "arn:aws:iam::909205068394:role/EC2-CSYE6225"
+          "AWS" : "arn:aws:iam::${module.globals.caller_account_id}:role/EC2-CSYE6225"
         },
         "Action" : [
           "kms:Encrypt",

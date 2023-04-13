@@ -12,6 +12,10 @@ data "aws_ami" "custom_ami" {
   }
 }
 
+module "globals" {
+  source = "../globals"
+}
+
 ## KMS Key Policy
 resource "aws_kms_key_policy" "ebs_kms_policy" {
   key_id = module.ebs_kms.kms_key_id
@@ -22,7 +26,7 @@ resource "aws_kms_key_policy" "ebs_kms_policy" {
         "Sid" : "Allow access for Key Administrators",
         "Effect" : "Allow",
         "Principal" : {
-          "AWS" : "arn:aws:iam::909205068394:user/awscli"
+          "AWS" : "arn:aws:iam::${module.globals.caller_account_id}:user/awscli"
         },
         "Action" : [
           "kms:Create*",
@@ -47,7 +51,7 @@ resource "aws_kms_key_policy" "ebs_kms_policy" {
         "Effect" : "Allow",
         "Principal" : {
           "AWS" : [
-            "arn:aws:iam::909205068394:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+            "arn:aws:iam::${module.globals.caller_account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
           ]
         },
         "Action" : [
@@ -64,7 +68,7 @@ resource "aws_kms_key_policy" "ebs_kms_policy" {
         "Effect" : "Allow",
         "Principal" : {
           "AWS" : [
-            "arn:aws:iam::909205068394:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+            "arn:aws:iam::${module.globals.caller_account_id}:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
           ]
         },
         "Action" : [
