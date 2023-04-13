@@ -96,17 +96,32 @@ variable "db_storage_encrypted" {
   default = true
 }
 
-variable "db_kms_key_id" {
-  type = string
-  default = null
-}
-
 variable "kms_description" {
   type    = string
   default = "KMS Key"
 }
 
-variable "kms_deletion_window_in_days" {
+variable "rds_kms_deletion_window_in_days" {
   type    = number
   default = 7
+}
+
+variable "rds_kms_key_usage" {
+  type    = string
+  default = "ENCRYPT_DECRYPT"
+}
+
+variable "rds_kms_enable_key_rotation" {
+  type    = bool
+  default = false
+}
+
+variable "rds_kms_is_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "rds_kms_multi_region" {
+  type    = bool
+  default = true
 }

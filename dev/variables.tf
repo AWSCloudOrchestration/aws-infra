@@ -20,7 +20,7 @@ variable "profile" {
 variable "environment" {
   type        = string
   description = "The Deployment environment"
-  default = "dev"
+  default     = "development"
 }
 
 variable "vpc_cidr" {
@@ -304,6 +304,31 @@ variable "ebs_kms_policy" {
   default = null
 }
 
+variable "rds_kms_deletion_window_in_days" {
+  type    = number
+  default = 7
+}
+
+variable "rds_kms_key_usage" {
+  type    = string
+  default = "ENCRYPT_DECRYPT"
+}
+
+variable "rds_kms_enable_key_rotation" {
+  type    = bool
+  default = false
+}
+
+variable "rds_kms_is_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "rds_kms_multi_region" {
+  type    = bool
+  default = true
+}
+
 // Application SG rules
 
 variable "application_sg_ingress_rules" {
@@ -580,15 +605,27 @@ variable "acm_statuses" {
   default = ["ISSUED"]
 }
 
-## KMS variables
-variable "kms_description" {
-  type    = string
-  default = "KMS Key"
-}
-
-variable "kms_deletion_window_in_days" {
+variable "ebs_kms_deletion_window_in_days" {
   type    = number
   default = 7
 }
 
+variable "ebs_kms_key_usage" {
+  type    = string
+  default = "ENCRYPT_DECRYPT"
+}
 
+variable "ebs_kms_enable_key_rotation" {
+  type    = bool
+  default = false
+}
+
+variable "ebs_kms_is_enabled" {
+  type    = bool
+  default = true
+}
+
+variable "ebs_kms_multi_region" {
+  type    = bool
+  default = true
+}

@@ -66,24 +66,28 @@ module "database" {
   depends_on = [
     module.rds_sg
   ]
-  db_private_subnet_ids       = [module.network.private_subnet_ids[0].id, module.network.private_subnet_ids[1].id]
-  db_allocated_storage        = var.db_allocated_storage
-  db_max_allocated_storage    = var.db_max_allocated_storage
-  db_name                     = var.db_name
-  db_engine                   = var.db_engine
-  db_engine_version           = var.db_engine_version
-  db_instance_class           = var.db_instance_class
-  db_port                     = var.db_port
-  db_username                 = var.db_username
-  db_password                 = var.db_password
-  db_skip_final_snapshot      = var.db_skip_final_snapshot
-  db_publicly_accessible      = var.db_publicly_accessible
-  db_multi_az                 = var.db_multi_az
-  db_sg_target_vpc_id         = module.network.vpc_id
-  db_vpc_security_group_ids   = [module.rds_sg.security_group_id]
-  db_environment              = var.environment
-  db_storage_encrypted        = var.db_storage_encrypted
-  kms_deletion_window_in_days = var.kms_deletion_window_in_days
+  db_private_subnet_ids           = [module.network.private_subnet_ids[0].id, module.network.private_subnet_ids[1].id]
+  db_allocated_storage            = var.db_allocated_storage
+  db_max_allocated_storage        = var.db_max_allocated_storage
+  db_name                         = var.db_name
+  db_engine                       = var.db_engine
+  db_engine_version               = var.db_engine_version
+  db_instance_class               = var.db_instance_class
+  db_port                         = var.db_port
+  db_username                     = var.db_username
+  db_password                     = var.db_password
+  db_skip_final_snapshot          = var.db_skip_final_snapshot
+  db_publicly_accessible          = var.db_publicly_accessible
+  db_multi_az                     = var.db_multi_az
+  db_sg_target_vpc_id             = module.network.vpc_id
+  db_vpc_security_group_ids       = [module.rds_sg.security_group_id]
+  db_environment                  = var.environment
+  db_storage_encrypted            = var.db_storage_encrypted
+  rds_kms_deletion_window_in_days = var.rds_kms_deletion_window_in_days
+  rds_kms_key_usage               = var.rds_kms_key_usage
+  rds_kms_enable_key_rotation     = var.rds_kms_enable_key_rotation
+  rds_kms_is_enabled              = var.rds_kms_is_enabled
+  rds_kms_multi_region            = var.rds_kms_multi_region
 }
 
 ## Application Load Balancer
@@ -139,7 +143,11 @@ module "instance" {
   alb_target_group_arns                = module.webapp_alb.alb_target_group_arns
   instance_associate_public_ip_address = var.instance_associate_public_ip_address
   instance_delete_on_termination       = var.instance_delete_on_termination
-  kms_deletion_window_in_days          = var.kms_deletion_window_in_days
+  ebs_kms_deletion_window_in_days      = var.ebs_kms_deletion_window_in_days
+  ebs_kms_key_usage                    = var.ebs_kms_key_usage
+  ebs_kms_enable_key_rotation          = var.ebs_kms_enable_key_rotation
+  ebs_kms_is_enabled                   = var.ebs_kms_is_enabled
+  ebs_kms_multi_region                 = var.ebs_kms_multi_region
 }
 
 ## S3 Bucket

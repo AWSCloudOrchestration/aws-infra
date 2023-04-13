@@ -66,7 +66,11 @@ module "rds_kms" {
   source = "../kms"
 
   kms_description             = "RDS KMS Key"
-  kms_deletion_window_in_days = var.kms_deletion_window_in_days
+  kms_deletion_window_in_days = var.rds_kms_deletion_window_in_days
+  kms_key_usage               = var.rds_kms_key_usage
+  kms_enable_key_rotation     = var.rds_kms_enable_key_rotation
+  kms_is_enabled              = var.rds_kms_is_enabled
+  kms_multi_region            = var.rds_kms_multi_region
 
 }
 
