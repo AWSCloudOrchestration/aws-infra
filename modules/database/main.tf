@@ -33,8 +33,8 @@ resource "aws_kms_key_policy" "rds_kms_policy" {
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-       {
-        "Sid": "Allow access for Key Administrators",
+      {
+        "Sid" : "Allow access for Key Administrators",
         "Effect" : "Allow",
         "Principal" : {
           "AWS" : "arn:aws:iam::${module.globals.caller_account_id}:user/awscli"
@@ -56,22 +56,7 @@ resource "aws_kms_key_policy" "rds_kms_policy" {
           "kms:CancelKeyDeletion"
         ],
         "Resource" : [module.rds_kms.kms_key_id]
-      },
-      {
-        "Sid" : "Allow use of the key",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "arn:aws:iam::${module.globals.caller_account_id}:role/EC2-CSYE6225"
-        },
-        "Action" : [
-          "kms:Encrypt",
-          "kms:Decrypt",
-          "kms:ReEncrypt*",
-          "kms:GenerateDataKey*",
-          "kms:DescribeKey"
-        ],
-        "Resource" : [module.rds_kms.kms_key_id]
-      },
+      }
     ]
   })
 }
@@ -82,7 +67,7 @@ module "rds_kms" {
 
   kms_description             = "RDS KMS Key"
   kms_deletion_window_in_days = var.kms_deletion_window_in_days
-  
+
 }
 
 ## DB subnet group
