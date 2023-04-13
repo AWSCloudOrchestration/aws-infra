@@ -267,6 +267,43 @@ variable "db_port" {
   default = 3306
 }
 
+variable "db_storage_encrypted" {
+  type    = bool
+  default = true
+}
+
+variable "rds_kms_policy" {
+  type = object({
+    Version = string
+    Statement = list(object({
+      Sid    = optional(string)
+      Effect = string
+      Principal = object({
+        AWS = string
+      })
+      Action   = list(string)
+      Resource = any
+    }))
+  })
+  default = null
+}
+
+variable "ebs_kms_policy" {
+  type = object({
+    Version = string
+    Statement = list(object({
+      Sid    = optional(string)
+      Effect = string
+      Principal = object({
+        AWS = string
+      })
+      Action   = list(string)
+      Resource = any
+    }))
+  })
+  default = null
+}
+
 // Application SG rules
 
 variable "application_sg_ingress_rules" {
@@ -459,13 +496,7 @@ variable "lb_sg_ingress_rules" {
       to_port     = 443
       protocol    = "tcp"
       cidr_blocks = ["0.0.0.0/0"]
-    },
-    {
-      from_port   = 80
-      to_port     = 80
-      protocol    = "tcp"
-      cidr_blocks = ["0.0.0.0/0"]
-    },
+    }
   ]
 }
 
@@ -525,13 +556,39 @@ variable "alb_target_group_arns" {
 }
 
 variable "instance_associate_public_ip_address" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "instance_delete_on_termination" {
-  type = bool
+  type    = bool
   default = true
+}
+
+variable "alb_certificate_arn" {
+  type    = string
+  default = null
+}
+
+variable "alb_ssl_policy" {
+  type    = string
+  default = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+}
+
+variable "acm_statuses" {
+  type    = list(string)
+  default = ["ISSUED"]
+}
+
+## KMS variables
+variable "kms_description" {
+  type    = string
+  default = "KMS Key"
+}
+
+variable "kms_deletion_window_in_days" {
+  type    = number
+  default = 7
 }
 
 

@@ -357,11 +357,26 @@ variable "cma_down_statistic" {
 }
 
 variable "instance_associate_public_ip_address" {
-  type = bool
+  type    = bool
   default = true
 }
 
 variable "instance_delete_on_termination" {
-  type = bool
+  type    = bool
   default = true
+}
+
+variable "ebs_kms_key_id" {
+  type    = string
+  default = null
+}
+
+variable "kms_description" {
+  type    = string
+  default = "KMS Key"
+}
+
+variable "kms_deletion_window_in_days" {
+  type    = number
+  default = 7
 }

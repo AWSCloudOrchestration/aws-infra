@@ -60,29 +60,30 @@ module "lb_sg" {
   sg_egress_rules  = var.lb_sg_egress_rules
 }
 
-
 ## Database
 module "database" {
   source = "../modules/database"
   depends_on = [
     module.rds_sg
   ]
-  db_private_subnet_ids     = [module.network.private_subnet_ids[0].id, module.network.private_subnet_ids[1].id]
-  db_allocated_storage      = var.db_allocated_storage
-  db_max_allocated_storage  = var.db_max_allocated_storage
-  db_name                   = var.db_name
-  db_engine                 = var.db_engine
-  db_engine_version         = var.db_engine_version
-  db_instance_class         = var.db_instance_class
-  db_port                   = var.db_port
-  db_username               = var.db_username
-  db_password               = var.db_password
-  db_skip_final_snapshot    = var.db_skip_final_snapshot
-  db_publicly_accessible    = var.db_publicly_accessible
-  db_multi_az               = var.db_multi_az
-  db_sg_target_vpc_id       = module.network.vpc_id
-  db_vpc_security_group_ids = [module.rds_sg.security_group_id]
-  db_environment            = var.environment
+  db_private_subnet_ids       = [module.network.private_subnet_ids[0].id, module.network.private_subnet_ids[1].id]
+  db_allocated_storage        = var.db_allocated_storage
+  db_max_allocated_storage    = var.db_max_allocated_storage
+  db_name                     = var.db_name
+  db_engine                   = var.db_engine
+  db_engine_version           = var.db_engine_version
+  db_instance_class           = var.db_instance_class
+  db_port                     = var.db_port
+  db_username                 = var.db_username
+  db_password                 = var.db_password
+  db_skip_final_snapshot      = var.db_skip_final_snapshot
+  db_publicly_accessible      = var.db_publicly_accessible
+  db_multi_az                 = var.db_multi_az
+  db_sg_target_vpc_id         = module.network.vpc_id
+  db_vpc_security_group_ids   = [module.rds_sg.security_group_id]
+  db_environment              = var.environment
+  db_storage_encrypted        = var.db_storage_encrypted
+  kms_deletion_window_in_days = var.kms_deletion_window_in_days
 }
 
 ## Application Load Balancer
@@ -94,6 +95,10 @@ module "webapp_alb" {
   alb_subnets          = [module.network.public_subnet_ids[0].id, module.network.public_subnet_ids[1].id, module.network.public_subnet_ids[2].id]
   alb_tg_vpc_id        = module.network.vpc_id
   autoscaling_group_id = module.instance.autoscaling_group_id
+  alb_certificate_arn  = var.alb_certificate_arn
+  alb_ssl_policy       = var.alb_ssl_policy
+  acm_domain_name      = var.route53_zone_name
+  acm_statuses         = var.acm_statuses
 }
 
 ## Autoscalable Instance
@@ -134,6 +139,7 @@ module "instance" {
   alb_target_group_arns                = module.webapp_alb.alb_target_group_arns
   instance_associate_public_ip_address = var.instance_associate_public_ip_address
   instance_delete_on_termination       = var.instance_delete_on_termination
+  kms_deletion_window_in_days          = var.kms_deletion_window_in_days
 }
 
 ## S3 Bucket
@@ -159,7 +165,7 @@ module "s3_iam" {
 
 }
 
-# Route 53
+## Route 53
 module "route_53" {
   source = "../modules/dns"
 

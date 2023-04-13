@@ -2,6 +2,11 @@
 ## LOAD BALANCER MODULE
 #############################################
 
+data "aws_acm_certificate" "issued" {
+  domain   = var.acm_domain_name
+  statuses = var.acm_statuses
+}
+
 ## Application Load Balancer
 resource "aws_lb" "application_lb" {
   name                             = var.alb_name
@@ -29,20 +34,23 @@ resource "aws_lb_target_group" "alb_tg" {
   load_balancing_algorithm_type = var.alb_algorithm_type
   target_type                   = var.alb_target_type
   vpc_id                        = var.alb_tg_vpc_id
-  
+
   health_check {
     path = var.lb_health_path
   }
 }
 
 ## Load balancer listener
-resource "aws_lb_listener" "alb_listener" {
+resource "aws_lb_listener" "alb_listener_https" {
   depends_on = [
     aws_lb_target_group.alb_tg
   ]
   load_balancer_arn = aws_lb.application_lb.arn
   port              = var.alb_listener_port
   protocol          = var.alb_listener_protocol
+  certificate_arn   = var.alb_certificate_arn != null ? var.alb_certificate_arn : data.aws_acm_certificate.issued.arn
+  ssl_policy        = var.alb_ssl_policy
+
   default_action {
     target_group_arn = aws_lb_target_group.alb_tg.arn
     type             = var.alb_listener_default_action_type

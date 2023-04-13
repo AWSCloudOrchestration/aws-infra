@@ -12,6 +12,83 @@ data "aws_ami" "custom_ami" {
   }
 }
 
+## KMS Key Policy
+resource "aws_kms_key_policy" "ebs_kms_policy" {
+  key_id = module.ebs_kms.kms_key_id
+  policy = jsonencode({
+    "Version" : "2012-10-17",
+    "Statement" : [
+      {
+        "Sid" : "Allow access for Key Administrators",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : "arn:aws:iam::909205068394:user/awscli"
+        },
+        "Action" : [
+          "kms:Create*",
+          "kms:Describe*",
+          "kms:Enable*",
+          "kms:List*",
+          "kms:Put*",
+          "kms:Update*",
+          "kms:Revoke*",
+          "kms:Disable*",
+          "kms:Get*",
+          "kms:Delete*",
+          "kms:TagResource",
+          "kms:UntagResource",
+          "kms:ScheduleKeyDeletion",
+          "kms:CancelKeyDeletion"
+        ],
+        "Resource" : [module.ebs_kms.kms_key_id]
+      },
+      {
+        "Sid" : "Allow service-linked role use of the customer managed key",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : [
+            "arn:aws:iam::909205068394:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+          ]
+        },
+        "Action" : [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ],
+        "Resource" : [module.ebs_kms.kms_key_id]
+      },
+      {
+        "Sid" : "Allow attachment of persistent resources",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : [
+            "arn:aws:iam::909205068394:role/aws-service-role/autoscaling.amazonaws.com/AWSServiceRoleForAutoScaling"
+          ]
+        },
+        "Action" : [
+          "kms:CreateGrant"
+        ],
+        "Resource" : [module.ebs_kms.kms_key_id],
+        "Condition" : {
+          "Bool" : {
+            "kms:GrantIsForAWSResource" : true
+          }
+        }
+      }
+    ]
+  })
+}
+
+## KMS Key
+module "ebs_kms" {
+  source = "../kms"
+
+  kms_description             = "EBS KMS Key"
+  kms_deletion_window_in_days = var.kms_deletion_window_in_days
+}
+
 ## Launch configuration
 resource "aws_launch_template" "launch_template" {
   name                                 = var.launch_config_name
@@ -44,7 +121,7 @@ resource "aws_launch_template" "launch_template" {
   network_interfaces {
     associate_public_ip_address = var.instance_associate_public_ip_address
     delete_on_termination       = var.instance_delete_on_termination
-    security_groups = var.ec2_vpc_security_group_ids
+    security_groups             = var.ec2_vpc_security_group_ids
   }
 
   iam_instance_profile {
@@ -56,6 +133,8 @@ resource "aws_launch_template" "launch_template" {
     ebs {
       volume_size           = var.ebs_size
       volume_type           = var.ebs_type
+      encrypted             = true
+      kms_key_id            = module.ebs_kms.kms_key_id
       delete_on_termination = var.ebs_delete_on_termination
     }
   }
@@ -124,7 +203,7 @@ resource "aws_cloudwatch_metric_alarm" "scale_up" {
   alarm_name          = var.cma_up_alarm_name
   comparison_operator = var.cma_up_comparison_operator
   namespace           = var.cma_up_namespace
-  metric_name         = var.cma_up_metric_name  
+  metric_name         = var.cma_up_metric_name
   threshold           = var.cma_up_threshold
   evaluation_periods  = var.cma_up_evaluation_periods
   period              = var.cma_up_period
