@@ -22,6 +22,65 @@ resource "aws_db_parameter_group" "mysql8-param-group" {
   }
 }
 
+## KMS Key Policy
+resource "aws_kms_key_policy" "rds_kms_policy" {
+  key_id = module.rds_kms.kms_key_id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+       {
+        "Sid": "Allow access for Key Administrators",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : "arn:aws:iam::909205068394:user/awscli"
+        },
+        "Action" : [
+          "kms:Create*",
+          "kms:Describe*",
+          "kms:Enable*",
+          "kms:List*",
+          "kms:Put*",
+          "kms:Update*",
+          "kms:Revoke*",
+          "kms:Disable*",
+          "kms:Get*",
+          "kms:Delete*",
+          "kms:TagResource",
+          "kms:UntagResource",
+          "kms:ScheduleKeyDeletion",
+          "kms:CancelKeyDeletion"
+        ],
+        "Resource" : [module.rds_kms.kms_key_id]
+      },
+      {
+        "Sid" : "Allow use of the key",
+        "Effect" : "Allow",
+        "Principal" : {
+          "AWS" : "arn:aws:iam::909205068394:role/EC2-CSYE6225"
+        },
+        "Action" : [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:ReEncrypt*",
+          "kms:GenerateDataKey*",
+          "kms:DescribeKey"
+        ],
+        "Resource" : [module.rds_kms.kms_key_id]
+      },
+    ]
+  })
+}
+
+## KMS Key
+module "rds_kms" {
+  source = "../kms"
+
+  kms_description             = "RDS KMS Key"
+  kms_deletion_window_in_days = var.kms_deletion_window_in_days
+  
+}
+
 ## DB subnet group
 resource "aws_db_subnet_group" "db-private-subnet-group" {
   name       = "main"
@@ -29,7 +88,7 @@ resource "aws_db_subnet_group" "db-private-subnet-group" {
 }
 
 ## RDS MySQL instance
-resource "aws_db_instance" "mysql-db" {
+resource "aws_db_instance" "mysql_db" {
   db_subnet_group_name   = aws_db_subnet_group.db-private-subnet-group.id
   allocated_storage      = var.db_allocated_storage
   max_allocated_storage  = var.db_max_allocated_storage
@@ -45,6 +104,9 @@ resource "aws_db_instance" "mysql-db" {
   publicly_accessible    = var.db_publicly_accessible
   multi_az               = var.db_multi_az
   vpc_security_group_ids = var.db_vpc_security_group_ids
+  storage_encrypted      = var.db_storage_encrypted
+  kms_key_id             = module.rds_kms.kms_key_id
+
 
   tags = {
     Name        = "rds-db-${var.db_environment}"

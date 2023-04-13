@@ -90,3 +90,23 @@ variable "db_port" {
   type = number
   default = 3306
 }
+
+variable "db_storage_encrypted" {
+  type = bool
+  default = true
+}
+
+variable "db_kms_key_id" {
+  type = string
+  default = null
+}
+
+variable "kms_description" {
+  type    = string
+  default = "KMS Key"
+}
+
+variable "kms_deletion_window_in_days" {
+  type    = number
+  default = 7
+}

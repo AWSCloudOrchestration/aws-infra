@@ -75,12 +75,12 @@ variable "lb_health_path" {
 
 variable "alb_listener_port" {
   type    = number
-  default = 80
+  default = 443
 }
 
 variable "alb_listener_protocol" {
   type    = string
-  default = "HTTP"
+  default = "HTTPS"
 }
 
 variable "alb_listener_default_action_type" {
@@ -96,4 +96,24 @@ variable "alb_target_type" {
 variable "alb_algorithm_type" {
   type    = string
   default = "round_robin"
+}
+
+variable "alb_certificate_arn" {
+  type    = string
+  default = null
+}
+
+variable "alb_ssl_policy" {
+  type    = string
+  default = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+}
+
+variable "acm_domain_name" {
+  type    = string
+  default = null
+}
+
+variable "acm_statuses" {
+  type    = list(string)
+  default = ["ISSUED"]
 }
