@@ -13,3 +13,6 @@ db_password                         = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCXY"
 route53_zone_name                   = "dev.gnanasekarkaushik.me"
 route53_alias_name                  = "www.dev.gnanasekarkaushik.me"
 route53_dns_records                 = [{ name = "dev.gnanasekarkaushik.me", ttl : "60", type = "A", records = null }]
+ebs_kms_multi_region                = false
+rds_kms_multi_region                = false
+
